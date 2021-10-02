@@ -1,0 +1,22 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+python-docx = "==0.8.11"
+pandas = "==1.3.3"
+openpyxl = "==3.0.9"
+
+[dev-packages]
+dash = "==2.0.0"
+streamlit = "==0.89.0"
+mypy = "==0.910"
+flake8 = "==3.9.2"
+pytest = "==6.2.4"
+autopep8 = "==1.5.7"
+isort = "==5.9.3"
+autoflake = "1.4"
+
+[requires]
+python_version = "3.9"

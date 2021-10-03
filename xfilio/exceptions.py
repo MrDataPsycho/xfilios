@@ -1,3 +1,6 @@
+import typing as t
+
+
 class FileTypeError(Exception):
     filetypes = ["docx", "xlsx"]
 
@@ -13,16 +16,22 @@ class FileTypeError(Exception):
 
 
 class TableHandlerError(Exception):
-    def __init__(self, message=None) -> None:  # type: ignore
-        self.message = "Could not read the content from excel file, either no excel sheet provided, or it is malformed."
+    def __init__(self, message: t.Optional[t.Union[Exception, str]] = None) -> None:
+        self.message = (
+            "Could not read the content from excel file, either no excel sheet "
+            "provided, or it is malformed."
+        )
         if message:
             self.message = message
         super().__init__(self.message)
 
 
 class DocxHandlerError(Exception):
-    def __init__(self, message=None) -> None:  # type: ignore
-        self.message = "Could not read the content from decx file, either no tables in the file or it is malformed."
+    def __init__(self, message: t.Optional[t.Union[Exception, str]] = None) -> None:
+        self.message = (
+            "Could not read the content from docx file, either no "
+            "tables in the file or it is malformed."
+        )
         if message:
             self.message = message
         super().__init__(self.message)

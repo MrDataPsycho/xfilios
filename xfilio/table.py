@@ -3,13 +3,11 @@ from __future__ import annotations
 import base64
 import io
 import typing as t
-from collections import OrderedDict
 
 import pandas as pd
 
-from exception.fileio import TableHandlerError
-from xfilio.xml import create_download_link
-from global_utils import clean_text
+from .exceptions import TableHandlerError
+from xfilio.html import create_download_link
 
 
 class TableHandler:
@@ -17,48 +15,62 @@ class TableHandler:
 
     def __init__(self, df: pd.DataFrame, schema: t.List, label: str) -> None:
         """
-        Initializer for the class
-        :param df: A dataframe
-        :param schema
+        Initializer of the TableHandler class
+        :param df: A pandas dataframe
+        :param schema: A Column Name list of the DataFrame to use
+        :param label: A label/tag which will be used as excel sheet name when creating a excel file
         """
         self.df = df
         self.schema = schema
-        self.label = clean_text(label)
+        self.label = label
 
     @classmethod
-    def from_collection(
-            cls, data: t.List[t.Dict],
-            label: str,
-            column_map: t.Optional[OrderedDict] = None
+    def from_records(
+            cls,
+            data: t.List[t.Dict],
+            col_headers: t.Optional[t.OrderedDict[str, str]],
+            label: str
     ) -> TableHandler:
+        """
+        Create A TableHandler object from list of records
+        :param data: List of records, similar structure as pd.DataFrame().to_dict(orient="records")
+        :param col_headers: Column Rename Map, if Not provided default DataFrame column will be used
+        :param label: A label/tag which will be used when creating sheet name in excel file
+        :return: Object of type TableHandler
+        """
         try:
             df = pd.DataFrame(data)
-            # df = df.dropna(subset=list(df.columns))
-            if column_map:
-                schema = list(column_map.values())
-                df = df.rename(columns=dict(column_map))
+            if col_headers:
+                schema = list(col_headers.values())
+                df = df.rename(columns=dict(col_headers))
                 df = df[schema]
 
                 return cls(df=df, schema=schema, label=label)
             return cls(df=df, schema=list(df.columns), label=label)
         except Exception as e:
-            print(e)
-            raise TableHandlerError
+            raise TableHandlerError(e)
 
     @classmethod
-    def from_data_list(cls, data_list: t.List, schema: t.List, label: str) -> TableHandler:
+    def from_list(
+            cls,
+            data: t.List,
+            col_headers: t.Optional[t.List[str]],
+            label: str
+    ) -> TableHandler:
         """
-        Create a object of itself from inputs
-        :param data_list: list of a list of rows to create dataframe
-        :param schema: column name for the dataframe
-        :param label: sheet name when creating the dataframe
+        Create A TableHandler object from list of list e.g data = [[...], [...]] or data = [(...), (...)]
+        :param data: list of a list of rows to create DataFrame
+        :param col_headers: column name to use for the DataFrame, if not provided default will be used
+        :param label: A label/tag which will be used when creating sheet name in excel file
         """
         try:
-            df = pd.DataFrame(data_list)
-            df.columns = schema
-            return cls(df=df, schema=schema, label=label)
+            df = pd.DataFrame(data)
+            if col_headers:
+                if len(col_headers) != len(df.columns):
+                    raise TableHandlerError("Length of col_headers does not match with the length of DataFrame columns")
+                df.columns = col_headers
+            return cls(df=df, schema=col_headers, label=label)
         except Exception as e:
-            print(e)
             raise TableHandlerError
 
     @classmethod
@@ -76,11 +88,9 @@ class TableHandler:
             df = df.dropna()
             return cls(df, schema, label)
         except TableHandlerError as e:
-            print(e)
-            raise TableHandlerError
+            raise TableHandlerError(e)
         except Exception as e:
-            print(e)
-            raise TableHandlerError
+            raise TableHandlerError(e)
 
     def get_dataframe(self) -> pd.DataFrame:
         return self.df
@@ -94,19 +104,33 @@ class TableHandler:
     def get_records(self) -> t.List[t.Dict]:
         return self.df.to_dict(orient="records")
 
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}(df=({self.df.shape}), {self.schema}, {self.label})"
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.df}, {self.schema}, {self.label})"
+
+    def __len__(self) -> int:
+        return len(self.df)
+
 
 class ExcelHandler:
     """Excel handler to create downloadable excel file using Excel Writer"""
 
     def __init__(self, tables: t.List[TableHandler]):
         """
-        Table Handler objects init
-        :param tables: list of table handler
+        Excel Handler objects init
+        :param tables: list of TableHandler instances to convert into Excel downloadable link
         """
         self.tables = tables
 
     @classmethod
     def from_table_handlers(cls, *args: TableHandler) -> ExcelHandler:
+        """
+        Create ExcelHandler from list of table Handlers
+        :param args: List of TableHandlers Object
+        :return: Instance of Type ExcelHandler
+        """
         handlers = [handler for handler in args]
         return cls(tables=handlers)
 
@@ -132,4 +156,16 @@ class ExcelHandler:
         """
         content = self.to_base64_str()
         return create_download_link(base64_str=content, filename=filename, filetype="xlsx")
+
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}([...])"
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.tables})"
+
+    def __len__(self) -> int:
+        return len(self.tables)
+
+
+
 

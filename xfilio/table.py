@@ -93,24 +93,31 @@ class TableHandler:
             raise TableHandlerError(e)
 
     def get_dataframe(self) -> pd.DataFrame:
+        """Get the DataFrame store in the class"""
         return self.df
 
     def get_label(self) -> str:
+        """Getter for the label field"""
         return self.label
 
     def get_schema(self) -> t.List:
+        """Getter for the schema field"""
         return self.schema
 
     def get_records(self) -> t.List[t.Dict]:
+        """Get the records stored in the dataframe as List of Dict"""
         return self.df.to_dict(orient="records")
 
     def __str__(self) -> str:
+        """String Representation of the class"""
         return f"{self.__class__.__name__}(df=({self.df.shape}), {self.schema}, {self.label})"
 
     def __repr__(self) -> str:
+        """Dev string representation of the class"""
         return f"{self.__class__.__name__}({self.df}, {self.schema}, {self.label})"
 
     def __len__(self) -> int:
+        """Len representation provides the len of the DataFrame attached"""
         return len(self.df)
 
 
@@ -158,12 +165,15 @@ class ExcelHandler:
         return create_download_link(base64_str=content, filename=filename, filetype="xlsx")
 
     def __str__(self) -> str:
+        """String representation of the class"""
         return f"{self.__class__.__name__}([...])"
 
     def __repr__(self) -> str:
+        """Dev string representation of the class"""
         return f"{self.__class__.__name__}({self.tables})"
 
     def __len__(self) -> int:
+        """Len implementation provides total number of TableHandler"""
         return len(self.tables)
 
 

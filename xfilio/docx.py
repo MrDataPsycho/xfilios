@@ -6,10 +6,10 @@ import os
 import typing as t
 from io import BytesIO
 
-from docx import Document as read_document
+from docx import Document as ReadDocFunc
 from docx.document import Document
 
-from exception.fileio import DocxHandlerError
+from .exceptions import DocxHandlerError
 from xfilio.html import create_download_link
 
 
@@ -71,7 +71,7 @@ class DocxHandler:
         :return: a DocxHandler object
         """
         bytes_stream = base64.b64decode(b64_str.encode("utf-8"))
-        document = read_document(io.BytesIO(bytes_stream))
+        document = ReadDocFunc(io.BytesIO(bytes_stream))
         if filename:
             return cls(document=document, name=filename)
         return cls(document=document, name="document")
@@ -86,7 +86,7 @@ class DocxHandler:
         Create itself from a file like object from streamlit
         """
         try:
-            document = read_document(content)
+            document = ReadDocFunc(content)
             return cls(document=document, name=content.name)
 
         except DocxHandlerError:

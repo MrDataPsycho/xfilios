@@ -7,7 +7,7 @@ import typing as t
 import pandas as pd
 
 from .exceptions import TableHandlerError
-from xfilio.html import create_download_link
+from src.xfilios.html import create_download_link
 
 
 class TableHandler:

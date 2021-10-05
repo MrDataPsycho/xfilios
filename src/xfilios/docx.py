@@ -10,7 +10,7 @@ from docx import Document as ReadDocFunc
 from docx.document import Document
 
 from .exceptions import DocxHandlerError
-from xfilio.html import create_download_link
+from src.xfilios.html import create_download_link
 
 
 def python_docx_to_byte(doc: Document) -> bytes:

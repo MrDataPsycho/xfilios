@@ -13,6 +13,7 @@ setup(
     packages=find_packages(where="src"),
     install_requires=SetupConfig.get_install_requirements(),
     license='MIT',
+    license_files=('LICENSE', ),
     keywords="FileIO, Docx, Excel, Streamlit, Dash",
     classifiers=[
         "Programming Language :: Python :: 3 :: Only",

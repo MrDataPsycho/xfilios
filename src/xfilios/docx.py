@@ -10,7 +10,7 @@ from docx import Document as ReadDocFunc
 from docx.document import Document
 
 from .exceptions import DocxHandlerError
-from src.xfilios.html import create_download_link
+from .html import create_download_link
 
 
 def python_docx_to_byte(doc: Document) -> bytes:
@@ -83,8 +83,9 @@ class DocxHandler:
     @classmethod
     def from_file_like(cls, content: t.Union[t.TextIO, t.BinaryIO]) -> DocxHandler:
         """
-        Create itself from a file like object from streamlit
+        Create itself from a file like object from framework like Streamlit/Dash
         """
+
         try:
             document = ReadDocFunc(content)
             return cls(document=document, name=content.name)
@@ -92,14 +93,16 @@ class DocxHandler:
         except DocxHandlerError:
             raise DocxHandlerError
         except Exception as e:
-            print(e)
-            raise DocxHandlerError
+            raise e
 
     def create_download_link(self, filename: str) -> str:
+        """
+        Create a html annotated tag to show in the front end
+        :param filename: Name of the File when downloaded
+        :return: Html anchor tag annotated String
+        """
+
         content = self.to_base64_str()
-        return create_download_link(base64_str=content, filename=filename, filetype="docx")
-
-
-
-
-
+        return create_download_link(
+            base64_str=content, filename=filename, filetype="docx"
+        )

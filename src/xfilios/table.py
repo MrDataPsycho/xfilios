@@ -26,10 +26,10 @@ class TableHandler:
 
     @classmethod
     def from_records(
-            cls,
-            data: t.List[t.Dict],
-            col_headers: t.Optional[t.OrderedDict[str, str]],
-            label: str
+        cls,
+        data: t.List[t.Dict],
+        col_headers: t.Optional[t.OrderedDict[str, str]],
+        label: str,
     ) -> TableHandler:
         """
         Create A TableHandler object from list of records
@@ -52,10 +52,7 @@ class TableHandler:
 
     @classmethod
     def from_list(
-            cls,
-            data: t.List,
-            col_headers: t.Optional[t.List[str]],
-            label: str
+        cls, data: t.List, col_headers: t.Optional[t.List[str]], label: str
     ) -> TableHandler:
         """
         Create A TableHandler object from list of list e.g data = [[...], [...]] or data = [(...), (...)]
@@ -67,7 +64,9 @@ class TableHandler:
             df = pd.DataFrame(data)
             if col_headers:
                 if len(col_headers) != len(df.columns):
-                    raise TableHandlerError("Length of col_headers does not match with the length of DataFrame columns")
+                    raise TableHandlerError(
+                        "Length of col_headers does not match with the length of DataFrame columns"
+                    )
                 df.columns = col_headers
             return cls(df=df, schema=col_headers, label=label)
         except Exception as e:
@@ -162,7 +161,9 @@ class ExcelHandler:
         :param filename: filename to be used when creating downloadable link
         """
         content = self.to_base64_str()
-        return create_download_link(base64_str=content, filename=filename, filetype="xlsx")
+        return create_download_link(
+            base64_str=content, filename=filename, filetype="xlsx"
+        )
 
     def __str__(self) -> str:
         """String representation of the class"""
@@ -175,7 +176,3 @@ class ExcelHandler:
     def __len__(self) -> int:
         """Len implementation provides total number of TableHandler"""
         return len(self.tables)
-
-
-
-

@@ -16,6 +16,8 @@ isort = "==5.9.3"
 black = "*"
 pytest = "*"
 pre-commit = "*"
+twine = "*"
+streamlit = "*"
 
 [requires]
 python_version = "3.9"

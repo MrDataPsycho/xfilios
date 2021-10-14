@@ -10,6 +10,7 @@ setup(
     url="https://github.com/DataPsycho/xfilios",
     description="Docx and Excel File handler for Streamlit or Dash",
     long_description=SetupConfig.read_metadata_from_readme(),
+    long_description_content_type="text/markdown",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     install_requires=SetupConfig.get_install_requirements(),

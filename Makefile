@@ -13,11 +13,3 @@ pytest_not_func:
 pytest_cov_html:
 	pipenv run pytest tests -m "not functional" --cov --cov-report html
 
-mypy_check:
-	pipenv run mypy sensors.py
-
-format_black:
-	pipenv run black sensors.py
-
-build_and_add:
-	pipenv install -e .

@@ -68,7 +68,7 @@ class SetupConfig:
             for line in f:
                 if "VERSION" in line:
                     version: str = line.split("=")[1]
-                    version = version.strip()
+                    version = version.strip().replace('"', "")
                     print(f"The version tag will be used for the build: {version}")
                     return version
         raise KeyError("Could not find the VERSION tag in the __init__.py file")

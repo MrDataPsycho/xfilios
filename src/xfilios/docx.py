@@ -10,22 +10,11 @@ from docx import Document as ReadDocFunc
 from docx.document import Document
 
 from .exceptions import DocxHandlerError
+from .handler import Handler
 from .html import create_download_link
 
 
-def python_docx_to_byte(doc: Document) -> bytes:
-    """
-    Convert a Python Docx file into byte
-    :param doc: Python Document type from Docx
-    :return: Bytes of Document
-    """
-    byte_stream = BytesIO()
-    doc.save(byte_stream)
-    byte_stream.seek(0)
-    return byte_stream.read()
-
-
-class DocxHandler:
+class DocxHandler(Handler):
     def __init__(self, document: Document, name: str) -> None:
         """
         Handle all the conversion to and from document file
@@ -34,13 +23,9 @@ class DocxHandler:
         self.document = document
         self.name = name
 
-    def __len__(self) -> int:
-        """Determine if there is any table in the docx or not"""
-        return len([table for table in self.document.tables])
-
     def get_stat(self) -> t.Dict:
-        total_tables = self.__len__()
-        total_paragraphs = len([paragraph for paragraph in self.document.paragraphs])
+        total_tables = len([table for table in self.document.tables])
+        total_paragraphs = self.__len__()
         return {"tables": total_tables, "paragraphs": total_paragraphs}
 
     def to_byte(self) -> bytes:
@@ -106,3 +91,13 @@ class DocxHandler:
         return create_download_link(
             base64_str=content, filename=filename, filetype="docx"
         )
+
+    def __str__(self) -> str:
+        return f'{self.__class__.__name__}(document="...", name={self.name})'
+
+    def __repr__(self):
+        raise f"{self.__class__.__name__}(document={self.document}, name={self.name})"
+
+    def __len__(self) -> int:
+        """Determine if there is any table in the docx or not"""
+        return len([para for para in self.document.paragraphs])

@@ -22,16 +22,13 @@ class TableHandlerError(Exception):
             "provided, or it is malformed."
         )
         if message:
-            self.message = message
+            self.message = str(message)
         super().__init__(self.message)
 
 
 class DocxHandlerError(Exception):
     def __init__(self, message: t.Optional[t.Union[Exception, str]] = None) -> None:
-        self.message = (
-            "Could not read the content from docx file, either no "
-            "tables in the file or it is malformed."
-        )
+        self.message = "Could not read the content from docx file, either no content in the file or it is malformed."
         if message:
-            self.message = message
+            self.message = str(message)
         super().__init__(self.message)

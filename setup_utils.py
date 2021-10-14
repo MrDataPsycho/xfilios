@@ -10,14 +10,14 @@ class SetupConfig:
         """Parse a Pipfile and store it in Dictionary"""
         pipfile_dict = dict()
         current_option = None
-        with open('Pipfile', 'r') as f:
+        with open("Pipfile", "r") as f:
             for line in f:
-                if line.startswith('['):
+                if line.startswith("["):
                     option = re.sub(r"\[|\]|\n", "", line)
                     pipfile_dict[option] = list()
                     current_option = option.strip()
-                if line != '' and not line.startswith("[") and len(line) > 0:
-                    pipfile_dict[current_option].append(line.strip().replace("\"", ""))
+                if line != "" and not line.startswith("[") and len(line) > 0:
+                    pipfile_dict[current_option].append(line.strip().replace('"', ""))
         return pipfile_dict
 
     @staticmethod
@@ -33,7 +33,9 @@ class SetupConfig:
         try:
             pipfile_dict = cls.parse_pipfile()
             packages = [
-                item.split(" = ") for item in pipfile_dict["packages"] if 'editable' not in item and len(item) > 0
+                item.split(" = ")
+                for item in pipfile_dict["packages"]
+                if "editable" not in item and len(item) > 0
             ]
             packages = [cls.format_requirements(item) for item in packages]
             print("Following are the required packages: {}".format(", ".join(packages)))
@@ -60,7 +62,9 @@ class SetupConfig:
     @classmethod
     def get_version_from_package(cls):
         """Read the current version from the package"""
-        with open(os.path.join('src', cls.PACKAGE_NAME, '__init__.py'), "rt", encoding="utf-8") as f:
+        with open(
+            os.path.join("src", cls.PACKAGE_NAME, "__init__.py"), "rt", encoding="utf-8"
+        ) as f:
             for line in f:
                 if "VERSION" in line:
                     version: str = line.split("=")[1]
@@ -68,4 +72,3 @@ class SetupConfig:
                     print(f"The version tag will be used for the build: {version}")
                     return version
         raise KeyError("Could not find the VERSION tag in the __init__.py file")
-

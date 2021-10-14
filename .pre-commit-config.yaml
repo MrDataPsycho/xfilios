@@ -9,7 +9,7 @@ repos:
           types: [python]
         - id: black
           name: black
-          entry: pipenv run black src
+          entry: pipenv run black
           args: [--quiet]
           language: system
           types: [python]

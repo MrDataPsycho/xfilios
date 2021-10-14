@@ -93,11 +93,14 @@ class DocxHandler(Handler):
         )
 
     def __str__(self) -> str:
+        """String representation of the class"""
         return f'{self.__class__.__name__}(document="...", name={self.name})'
 
     def __repr__(self):
-        raise f"{self.__class__.__name__}(document={self.document}, name={self.name})"
+        raise NotImplementedError
 
     def __len__(self) -> int:
         """Determine if there is any table in the docx or not"""
-        return len([para for para in self.document.paragraphs])
+        return len(
+            [para for para in self.document.paragraphs if len(para.text.strip()) > 0]
+        )

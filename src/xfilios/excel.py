@@ -31,10 +31,7 @@ class ExcelHandler(Handler):
         handlers = [handler for handler in args]
         return cls(tables=handlers)
 
-    def to_base64_str(self) -> str:
-        """
-        Convert table handlers into base64 encoded downloadable string
-        """
+    def to_bytes(self) -> bytes:
         with io.BytesIO() as output:
             writer = pd.ExcelWriter(output)
             for table in self.tables:
@@ -43,8 +40,15 @@ class ExcelHandler(Handler):
                 df.to_excel(writer, sheet_name=label, index=False)
             writer.save()
             output.seek(0)
-            decoded_data = base64.b64encode(output.read()).decode("utf-8")
-            return decoded_data
+            return output.read()
+
+    def to_base64_str(self) -> str:
+        """
+        Convert table handlers into base64 encoded downloadable string
+        """
+        byte_data = self.to_bytes()
+        decoded_data = base64.b64encode(byte_data).decode("utf-8")
+        return decoded_data
 
     def create_download_link(self, filename: str) -> str:
         """

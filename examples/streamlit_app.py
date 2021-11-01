@@ -21,6 +21,12 @@ def docx_handler_demo():
         download_link = handler.create_download_link(filename="demo.docx")
         download_text = f"Please Download the document back {download_link}"
         st.markdown(download_text, unsafe_allow_html=True)
+        st.download_button(
+            label="Download",
+            data=handler.to_byte(),
+            mime="application/octet-stream",
+            file_name="demo.docx",
+        )
 
 
 def excel_handler_demo():
@@ -34,6 +40,12 @@ def excel_handler_demo():
         download_link = excel_handlers.create_download_link(filename="demo.xlsx")
         download_text = f"Please Download the File back {download_link}"
         st.markdown(download_text, unsafe_allow_html=True)
+        st.download_button(
+            label="Download",
+            data=excel_handlers.to_bytes(),
+            mime="application/octet-stream",
+            file_name="demo.xlsx",
+        )
         st.markdown("Here is the content of the file")
         st.table(table_handler.get_data_as_dataframe())
 

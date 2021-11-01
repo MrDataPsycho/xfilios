@@ -18,6 +18,7 @@ pytest = "*"
 pre-commit = "*"
 twine = "*"
 streamlit = "*"
+watchdog = "*"
 
 [requires]
 python_version = "3.9"
